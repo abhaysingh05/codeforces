@@ -12,28 +12,22 @@ const int mod = INF + 7;
 void runCase(int &testCase) {
     // cout << "#Case " << testCase << ": \n";
 
-    int n, k;
+    int n, k, curr = 1;
     cin >> n >> k;
     k--;
-    vector<int> arr(n);
-    for (auto &e : arr) cin >> e;
-    int mxi = 0;
-    for (int i = 0; i <= k; i++) {
-        if (arr[i] > arr[mxi]) {
-            mxi = i;
-        }
+    vector<int> cows(n);
+    for (auto &e : cows) cin >> e;
+    if (k != 0) {
+        curr = 0;
     }
-    swap(arr[k], arr[mxi]);
-    int val = arr[mxi];
-    int id = mxi;
-    for (int i = 0; i < n; i++) {
-        if (arr[i] > val) {
-            id = i;
+    int ans = 0;
+    for (int i = curr; i < n; i++) {
+        if (cows[i] < cows[k])
+            ans++;
+        else
             break;
-        }
     }
-    if (mxi == 0) id--;
-    cout << id - mxi << "\n";
+    cout << ans << "\n";
 }
 
 int32_t main() {
