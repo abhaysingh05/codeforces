@@ -12,13 +12,31 @@ const int mod = INF + 7;
 void runCase(int &testCase) {
     // cout << "#Case " << testCase << ": \n";
 
-    // Your code here
+    int n, k;
+    cin >> n >> k;
+    vector<int> a(n);
+    for (auto &e : a) cin >> e;
+    while (k--) {
+        int x;
+        cin >> x;
+        int l = -1;
+        int r = n;
+        int m;
+        while (r > l + 1) {
+            m = (l + r) / 2;
+            if (a[m] <= x)
+                l = m;
+            else
+                r = m;
+        }
+        cout << ((l == -1) ? 0 : r) << "\n";
+    }
 }
 
 int32_t main() {
 
     int tests = 1;
-    cin >> tests;
+    // cin >> tests;
     for (int i = 1; i <= tests; i++) runCase(i);
 
     return 0;

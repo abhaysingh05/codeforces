@@ -8,32 +8,20 @@ using namespace std;
 const int INF = (int)1e9;
 const int mod = INF + 7;
 /**************************************************************************************/
-int lis(vector<int>& a) {
-    int n = a.size();
-    vector<int> d(n, 1);
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < i; j++) {
-            if (a[j] < a[i])
-                d[i] = max(d[i], d[j] + 1);
-        }
-    }
 
-    int ans = d[0];
-    for (int i = 1; i < n; i++) {
-        ans = max(ans, d[i]);
-    }
-    return ans;
-}
 void runCase(int &testCase) {
     // cout << "#Case " << testCase << ": \n";
 
-    int n;
-    cin >> n;
-    vector<int> arr(n);
-    for(auto &e: arr) cin >> e;
-    int k;
-    cin >> k;
-    cout << lis(arr) << "\n";
+    int n, a, b, c;
+    cin >> n >> a >> b >> c;
+    int ans = 0;
+    for (int x = 0; x <= n; x += a) {
+        for (int y = 0; y <= n - x; y += b) {
+            double z = ((float)n - x - y) / c;
+            if (ceil(z) == floor(z)) ans = max(ans, x / a + y / b + (int)floor(z));
+        }
+    }
+    cout << ans << "\n";
 }
 
 int32_t main() {
