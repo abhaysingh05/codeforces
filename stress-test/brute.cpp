@@ -1,38 +1,63 @@
 #include <bits/stdc++.h>
 using namespace std;
-constexpr int64_t inf = (int64_t)1e+18;
-constexpr int mod = 998244353;
 
-// @author: ZhockDen
+#define int long long
 
-int popcount(int x) {
-    return __builtin_popcount(x);
+int gcd(int a, int b) {
+    while (b != 0) {
+        int tmp = a % b;
+        a = b;
+        b = tmp;
+    }
+    return a;
+}
+int lcm(int a, int b) {
+    return a * b / gcd(a, b);
 }
 
-void runCase(int &testCase) {
-    // cout << "#Case " << testCase << ": \n";
+void solve() {
+    int n;
+    cin >> n;
 
-    int64_t n, m;
-    cin >> n >> m;
-    int64_t ans = 0;
-    for (int k = 0; k <= n; ++k) {
-        int km = k & m;
-        ans += popcount(km);
-        if (ans >= mod) {
-            ans -= mod;
+    vector<int> k(n);
+    for (int i = 0; i < n; i++) {
+        cin >> k[i];
+    }
+
+    int z = 1;
+    for (int i = 0; i < n; i++) {
+        z = lcm(z, k[i]);
+    }
+
+    int suma = 0;
+    for (int i = 0; i < n; i++) {
+        suma += z / k[i];
+    }
+    int summm = 0;
+    vector<int> ress;
+    if (suma < z) {
+        for (int i = 0; i < n; i++) {
+            summm += z / k[i];
+            ress.push_back(z / k[i]);
+        }
+    } else {
+        cout << -1 << "\n";
+        return;
+    }
+    int check = false;
+    for (int i = 0; i < n; i++) {
+        if (summm > k[i] * ress[i]) {
+            cout << "NO\n";
+            return;
         }
     }
-    cout << ans % mod << "\n";
+    cout << "YES\n";
 }
 
-int main() {
-
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-
-    int tests = 1;
-    // cin >> tests;
-    for (int i = 1; i <= tests; i++) runCase(i);
-
-    return 0;
+signed main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
 }

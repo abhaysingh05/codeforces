@@ -14,13 +14,15 @@ inline int64_t rnd(int64_t l = 0, int64_t r = 1E9) {
 
 void runCase(int &testCase) {
     // cout << "#Case " << testCase << ": \n";
-
     int t = rnd(1, 1);
-    // cout << t << "\n";
+    cout << t << "\n";
     while (t--) {
-        int n = rnd(1, 1000000);
-        int m = rnd(1, 1000000);
-        cout << n << " " << m << "\n";
+        int n = rnd(1, 50);
+        cout << n << "\n";
+        for (int i = 0; i < n; i++) {
+            cout << rnd(2, 20) << " ";
+        }
+        cout << "\n";
     }
 }
 
