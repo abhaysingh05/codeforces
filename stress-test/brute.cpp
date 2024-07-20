@@ -1,63 +1,52 @@
 #include <bits/stdc++.h>
 using namespace std;
+constexpr int64_t inf = (int64_t)1e+18;
+constexpr int mod = 1000000007;
 
-#define int long long
+// #ifdef LOCAL
+// #include "debug.h"
+// #else
+// #define dbg(...)
+// #endif
 
-int gcd(int a, int b) {
-    while (b != 0) {
-        int tmp = a % b;
-        a = b;
-        b = tmp;
-    }
-    return a;
-}
-int lcm(int a, int b) {
-    return a * b / gcd(a, b);
-}
+// @author: ZhockDen
 
-void solve() {
-    int n;
-    cin >> n;
-
-    vector<int> k(n);
+void runCase(int &testCase) {
+    // cout << "#Case " << testCase << ": \n";
+// 1
+// 5 5
+// 8 1 5 8 9
+    int64_t n, x;
+    cin >> n >> x;
+    vector<int64_t> v(n);
+    for (auto &e : v) cin >> e;
+    int64_t i = 0, j = 0, ans = 0, curr = 0;
+    int64_t cnt = 0;
     for (int i = 0; i < n; i++) {
-        cin >> k[i];
-    }
+        for (int j = i; j < n; j++) {
+            int sum = 0;
+            for (int k = i; k <= j; k++) {
+                sum += v[k];
+                if (sum > x) sum = 0;
+            }
+            if (sum != 0) {
 
-    int z = 1;
-    for (int i = 0; i < n; i++) {
-        z = lcm(z, k[i]);
-    }
-
-    int suma = 0;
-    for (int i = 0; i < n; i++) {
-        suma += z / k[i];
-    }
-    int summm = 0;
-    vector<int> ress;
-    if (suma < z) {
-        for (int i = 0; i < n; i++) {
-            summm += z / k[i];
-            ress.push_back(z / k[i]);
-        }
-    } else {
-        cout << -1 << "\n";
-        return;
-    }
-    int check = false;
-    for (int i = 0; i < n; i++) {
-        if (summm > k[i] * ress[i]) {
-            cout << "NO\n";
-            return;
+                ans++;
+            }
+            // if (sum == 0 && v[j] <= x) cout << i << " " << j << "\n";
         }
     }
-    cout << "YES\n";
+    cout << ans << "\n";
 }
 
-signed main() {
-    int t;
-    cin >> t;
-    while (t--) {
-        solve();
-    }
+int main() {
+
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+
+    int tests = 1;
+    cin >> tests;
+    for (int i = 1; i <= tests; i++) runCase(i);
+
+    return 0;
 }
