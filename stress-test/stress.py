@@ -56,11 +56,11 @@ def process():
                 cprint("Wrong Answer", clr="red")
 
                 # print input
-                cprint("Input", clr="cyan")
+                cprint("Input: ", clr="cyan")
                 print(std_input)
 
                 # print output
-                cprint("\nOutput", clr="cyan")
+                cprint("\nCorrect Output: ", clr="cyan")
                 print(std_output)
 
                 # print all outputs
@@ -100,10 +100,10 @@ def process():
             else:
                 cprint("Accepted", clr="green")
                 if test_case <= 5:
-                    print("Input")
+                    print("Input: ")
                     print(std_input)
 
-                    print("\nOutput")
+                    print("\nCorrect Output: ")
                     print(std_output)
 
                     for i in range(len(path["incorrect_files"])):

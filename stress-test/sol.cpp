@@ -1,30 +1,38 @@
 #include <bits/stdc++.h>
 using namespace std;
-constexpr int64_t inf = (int64_t)1e+18;
-constexpr int mod = 1000000007;
 
-#ifdef LOCAL
-#include "debug.h"
-#else
-#define dbg(...)
-#endif
+void solve(int l, int r) {
+    // Calculate s1
+    int x = log(l + 1) / log(3) + 1;
+    int s1 = x;
+    s1 = s1 + log(l) / log(3) + x + 1;
 
-// @author: ZhockDen
+    // Loop to add values to s1
+    for (int i = 2; i <= r - l; i++) {
+        s1 = s1 + log(l + i) / log(3) + 1;
+    }
 
-void runCase(int &testCase) {
-    // cout << "#Case " << testCase << ": \n";
+    // Calculate s2
+    int y = floor(log(l) / log(3) + 1);
+    int s2 = y;
+    s2 = s2 + log(l + 1) / log(3) + y + 1;
 
-    
+    // Loop to add values to s2
+    for (int i = 2; i <= r - l; i++) {
+        s2 = s2 + log(l + i) / log(3) + 1;
+    }
+
+    // Output the minimum of s1 and s2
+    cout << fmin(s1, s2) << "\n";
 }
 
 int main() {
-
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-
-    int tests = 1;
-    cin >> tests;
-    for (int i = 1; i <= tests; i++) runCase(i);
-
+    int t;
+    cin >> t;
+    while (t--) {
+        int l, r;
+        cin >> l >> r;
+        solve(l, r);
+    }
     return 0;
 }

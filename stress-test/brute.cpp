@@ -3,39 +3,30 @@ using namespace std;
 constexpr int64_t inf = (int64_t)1e+18;
 constexpr int mod = 1000000007;
 
-// #ifdef LOCAL
-// #include "debug.h"
-// #else
-// #define dbg(...)
-// #endif
+#ifdef LOCAL
+#include "debug.h"
+#else
+#define dbg(...)
+#endif
 
 // @author: ZhockDen
-
+vector<int64_t> pfs(2e5 + 1, 0);
+auto log3 = [](int64_t x) {
+    int64_t res = 0;
+    while (x > 0) {
+        res++;
+        x /= 3;
+    }
+    return res;
+};
 void runCase(int &testCase) {
     // cout << "#Case " << testCase << ": \n";
-// 1
-// 5 5
-// 8 1 5 8 9
-    int64_t n, x;
-    cin >> n >> x;
-    vector<int64_t> v(n);
-    for (auto &e : v) cin >> e;
-    int64_t i = 0, j = 0, ans = 0, curr = 0;
-    int64_t cnt = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = i; j < n; j++) {
-            int sum = 0;
-            for (int k = i; k <= j; k++) {
-                sum += v[k];
-                if (sum > x) sum = 0;
-            }
-            if (sum != 0) {
 
-                ans++;
-            }
-            // if (sum == 0 && v[j] <= x) cout << i << " " << j << "\n";
-        }
-    }
+    int64_t l, r;
+    cin >> l >> r;
+    int64_t ans = 0;
+    ans += log3(l);
+    ans += pfs[r] - (l <= 0 ? 0 : pfs[l - 1]);
     cout << ans << "\n";
 }
 
@@ -43,6 +34,10 @@ int main() {
 
     ios::sync_with_stdio(false);
     cin.tie(0);
+
+    for (int64_t i = 1; i <= 2e5; i++) {
+        pfs[i] = pfs[i - 1] + log3(i);
+    }
 
     int tests = 1;
     cin >> tests;

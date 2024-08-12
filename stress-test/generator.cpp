@@ -17,12 +17,13 @@ void runCase(int &testCase) {
     int64_t t = rnd(1, 1);
     cout << t << "\n";
     while (t--) {
-        int64_t n = rnd(1, 5);
-        int64_t x = rnd(1, 5);
-        cout << n << " " << x << "\n";
-        for (int i = 0; i < n; i++) {
-            cout << rnd(1, 9) << " ";
-        }
+        // int64_t n = rnd(2, 5);
+        // cout << n << "\n";
+        // for (int i = 0; i < n; i++) {
+        //     cout << rnd(1, n - 1) << " ";
+        // }
+        int l = rnd(10, 20);
+        cout << l << " " << rnd(l + 1, l + 10);
         cout << "\n";
     }
 }
