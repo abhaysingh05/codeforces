@@ -151,7 +151,6 @@ void runCase(int &testCase) {
         vv.push_back(y);
     }
     sort(vv.begin(), vv.end());
-    vv.push_back(n - 1);
     vector<int> res;
     int curr = 0;
     int rt = 0;
@@ -170,7 +169,7 @@ void runCase(int &testCase) {
                 Mn.set(e, INT32_MAX);
             }
             st.insert(E);
-            while (rt < (vv.size() - 1) && st.count(v[vv[rt]])) rt++;
+            while (st.count(v[vv[rt]])) rt++;
             curr = val + 1;
         } else {
             // cout << curr << "-" << vv[rt] << "mn\n";
@@ -184,10 +183,9 @@ void runCase(int &testCase) {
                 Mn.set(e, INT32_MAX);
             }
             st.insert(E);
-            while (rt < (vv.size() - 1) && st.count(v[vv[rt]])) rt++;
+            while (st.count(v[vv[rt]])) rt++;
             curr = val + 1;
         }
-        // assert(false);
     }
     cout << res.size() << "\n";
     for (auto &e : res) cout << e << " ";

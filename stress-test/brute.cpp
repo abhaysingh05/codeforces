@@ -1,47 +1,93 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <set>
+#include <algorithm>
+
 using namespace std;
-constexpr int64_t inf = (int64_t)1e+18;
-constexpr int mod = 1000000007;
 
-#ifdef LOCAL
-#include "debug.h"
-#else
-#define dbg(...)
-#endif
-
-// @author: ZhockDen
-vector<int64_t> pfs(2e5 + 1, 0);
-auto log3 = [](int64_t x) {
-    int64_t res = 0;
-    while (x > 0) {
-        res++;
-        x /= 3;
+// Helper function to generate all subsequences with unique elements
+void generateUniqueSubsequences(const vector<int>& a, int index, vector<int>& current, set<int>& used, vector<vector<int>>& allSubsequences) {
+    if (index == a.size()) {
+        if (!current.empty()) {
+            allSubsequences.push_back(current);
+        }
+        return;
     }
-    return res;
-};
-void runCase(int &testCase) {
-    // cout << "#Case " << testCase << ": \n";
 
-    int64_t l, r;
-    cin >> l >> r;
-    int64_t ans = 0;
-    ans += log3(l);
-    ans += pfs[r] - (l <= 0 ? 0 : pfs[l - 1]);
-    cout << ans << "\n";
+    // Option 1: Include the current element if it has not been used
+    if (used.find(a[index]) == used.end()) {
+        current.push_back(a[index]);
+        used.insert(a[index]);
+        generateUniqueSubsequences(a, index + 1, current, used, allSubsequences);
+        current.pop_back();
+        used.erase(a[index]);
+    }
+
+    // Option 2: Exclude the current element
+    generateUniqueSubsequences(a, index + 1, current, used, allSubsequences);
+}
+
+// Comparator function to compare two subsequences after applying the -1 multiplication on odd positions
+bool compareSubsequences(const vector<int>& a, const vector<int>& b) {
+    int len = min(a.size(), b.size());
+    for (int i = 0; i < len; ++i) {
+        int valA = (i % 2 == 0) ? -a[i] : a[i];
+        int valB = (i % 2 == 0) ? -b[i] : b[i];
+        if (valA != valB) return valA < valB;
+    }
+    return a.size() < b.size();  // If they are equal up to len, the shorter one is considered smaller
 }
 
 int main() {
+    int t;
+    cin >> t;
 
-    ios::sync_with_stdio(false);
-    cin.tie(0);
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        for (int i = 0; i < n; ++i) {
+            cin >> a[i];
+        }
 
-    for (int64_t i = 1; i <= 2e5; i++) {
-        pfs[i] = pfs[i - 1] + log3(i);
+        vector<vector<int>> allSubsequences;
+        vector<int> current;
+        set<int> used;
+
+        // Generate all subsequences with unique elements
+        generateUniqueSubsequences(a, 0, current, used, allSubsequences);
+
+        // Find the maximum length of subsequences
+        int maxLength = 0;
+        for (const auto& subseq : allSubsequences) {
+            if (subseq.size() > maxLength) {
+                maxLength = subseq.size();
+            }
+        }
+
+        // Collect all subsequences of maximum length
+        vector<vector<int>> maxLenSubsequences;
+        for (const auto& subseq : allSubsequences) {
+            if (subseq.size() == maxLength) {
+                maxLenSubsequences.push_back(subseq);
+            }
+        }
+
+        // Find the lexicographically smallest sequence after applying the transformation
+        vector<int> result = maxLenSubsequences[0];
+        for (const auto& subseq : maxLenSubsequences) {
+            if (compareSubsequences(subseq, result)) {
+                result = subseq;
+            }
+        }
+
+        // Output the result
+        cout << result.size() << endl;
+        for (int i = 0; i < result.size(); ++i) {
+            cout << result[i] << " ";
+        }
+        cout << endl;
     }
-
-    int tests = 1;
-    cin >> tests;
-    for (int i = 1; i <= tests; i++) runCase(i);
 
     return 0;
 }
