@@ -1,207 +1,111 @@
 #include <bits/stdc++.h>
+using ll = long long;
 using namespace std;
-constexpr int64_t inf = (int64_t)1e+18;
-constexpr int mod = 1000000007;
 
-#ifdef LOCAL
-#include "debug.h"
-#else
-#define dbg(...)
-#endif
-
-// @author: ZhockDen
-
-template <typename T>
-struct mxsegtree {
-
-    T zeroSum = INT32_MIN;
-
-    T calc(T a, T b) {
-        return max(a, b);
+bool isprime(ll n) {
+    if (n <= 1) return 0;
+    for (ll i = 2; i * i <= n; i++) {
+        if (n % i == 0) return 0;
     }
+    return 1;
+}
 
-    vector<T> sums;
+ll max(ll a, ll b) {
+    return (a > b) ? a : b;
+}
 
-    int size;
+ll min(ll a, ll b) {
+    return (a < b) ? a : b;
+}
 
-    void set(int i, T x, int n, int L, int R) {
-        if (R == L + 1) {
-            sums[n] = x;
-            return;
-        }
-        int M = (L + R) >> 1;
-        if (i < M) {
-            set(i, x, 2 * n + 1, L, M);
-        } else {
-            set(i, x, 2 * n + 2, M, R);
-        }
-        sums[n] = calc(sums[2 * n + 1], sums[2 * n + 2]);
+ll sum2n(ll n) {
+    return (n * (n + 1)) / 2;
+}
+
+ll sumlr(ll l, ll r) {
+    return ((l + r) * (r - l + 1)) / 2;
+}
+
+long long gcd(long long a, long long b) {
+    while (b != 0) {
+        long long temp = b;
+        b = a % b;
+        a = temp;
     }
+    return a;
+}
 
-    T sum(int l, int r, int n, int L, int R) {
-        if (l >= R || L >= r) return zeroSum;
-        if (L >= l && R <= r) return sums[n];
-        int M = (L + R) >> 1;
-        return calc(sum(l, r, 2 * n + 1, L, M), sum(l, r, 2 * n + 2, M, R));
+long long lcm(long long a, long long b) {
+    return (a / gcd(a, b)) * b;
+}
+
+bool issorted(ll arr[], ll n) {
+    for (ll i = 1; i < n; i++) { // start from 1, not 0
+        if (arr[i] < arr[i - 1]) return 0;
     }
-
-    void init(int n) {
-        size = 1;
-        while (size < n) size *= 2;
-        sums.assign(2 * size, zeroSum);
+    return 1;
+}
+ll mod=1000000007;
+void solve() {
+    ll n;
+    cin>>n;
+    vector<vector<ll> > adj(n+1);
+    ll c=n-1;
+    while(c--)
+    {
+        ll a,b;
+        cin>>a>>b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
     }
-
-    void init(vector<T> a) {
-        int n = a.size();
-        init(n);
-        size = 1;
-        while (size < n) size *= 2;
-        sums.assign(2 * size, zeroSum);
-        for (int i = 0; i < n; i++) {
-            sums[size - 1 + i] = a[i];
-        }
-        for (int i = size - 2; i >= 0; i--) {
-            sums[i] = calc(sums[2 * i + 1], sums[2 * i + 2]);
-        }
+    string s;
+    cin>>s;
+    vector<ll> deg(n+1);
+    for (ll i=1;i<=n;i++) deg[i]=adj[i].size();
+    vector<ll> leaf;
+    for (ll i=2;i<=n;i++) if (deg[i]==1) leaf.push_back(i);
+    string t="a";
+    t+=s;
+    s=t;
+    ll c0=0,c1=0,c2=0;
+    for (auto p: leaf)
+    {
+        if (s[p]=='1') c1++;
+        else if (s[p]=='0') c0++;
+        else c2++;
     }
-
-    void set(int i, T x) { set(i, x, 0, 0, size); }
-
-    T sum(int l, int r) { return sum(l, r, 0, 0, size); }
-};
-
-template <typename T>
-struct mnsegtree {
-
-    T zeroSum = INT32_MAX;
-
-    T calc(T a, T b) {
-        return min(a, b);
+    ll score=0;
+    if (s[1]=='1') score=c0;
+    else if (s[1]=='0') score=c1;
+    if (s[1]!='?')
+    {
+        score+=(c2+1)/2;
+        cout<<score<<endl;
+        return;
     }
-
-    vector<T> sums;
-
-    int size;
-
-    void set(int i, T x, int n, int L, int R) {
-        if (R == L + 1) {
-            sums[n] = x;
-            return;
-        }
-        int M = (L + R) >> 1;
-        if (i < M) {
-            set(i, x, 2 * n + 1, L, M);
-        } else {
-            set(i, x, 2 * n + 2, M, R);
-        }
-        sums[n] = calc(sums[2 * n + 1], sums[2 * n + 2]);
+    ll p=0;
+    for (ll i=1;i<=n;i++) if (s[i]=='?') p++;
+    p-=c2+1;
+    if (c0==c1)
+    {
+        if (p&1) score++;
+        score+=c1;
+        score+=c2/2;
+        cout<<score<<endl;
+        return;
     }
-
-    T sum(int l, int r, int n, int L, int R) {
-        if (l >= R || L >= r) return zeroSum;
-        if (L >= l && R <= r) return sums[n];
-        int M = (L + R) >> 1;
-        return calc(sum(l, r, 2 * n + 1, L, M), sum(l, r, 2 * n + 2, M, R));
-    }
-
-    void init(int n) {
-        size = 1;
-        while (size < n) size *= 2;
-        sums.assign(2 * size, zeroSum);
-    }
-
-    void init(vector<T> a) {
-        int n = a.size();
-        init(n);
-        size = 1;
-        while (size < n) size *= 2;
-        sums.assign(2 * size, zeroSum);
-        for (int i = 0; i < n; i++) {
-            sums[size - 1 + i] = a[i];
-        }
-        for (int i = size - 2; i >= 0; i--) {
-            sums[i] = calc(sums[2 * i + 1], sums[2 * i + 2]);
-        }
-    }
-
-    void set(int i, T x) { set(i, x, 0, 0, size); }
-
-    T sum(int l, int r) { return sum(l, r, 0, 0, size); }
-};
-
-void runCase(int &testCase) {
-    // cout << "#Case " << testCase << ": \n";
-
-    int n;
-    cin >> n;
-    vector<int> v(n);
-    for (auto &e : v) cin >> e;
-    mnsegtree<int> Mn;
-    mxsegtree<int> Mx;
-    Mn.init(v);
-    Mx.init(v);
-    map<int, int> mp;
-    map<int, vector<int>> mp1;
-    for (int i = 0; i < n; i++) {
-        mp[v[i]] = i;
-        mp1[v[i]].push_back(i);
-    }
-    vector<int> vv;
-    for (auto &[x, y] : mp) {
-        vv.push_back(y);
-    }
-    sort(vv.begin(), vv.end());
-    vv.push_back(n - 1);
-    vector<int> res;
-    int curr = 0;
-    int rt = 0;
-    set<int> st;
-    for (int i = 0; i < mp.size(); i++) {
-        // cout << i << " ";
-        if (i % 2 == 0) {
-            // cout << curr << "-" << vv[rt] << "mn\n";
-            int E = Mx.sum(curr, vv[rt] + 1);
-            // cout << E << "`";
-            res.push_back(E);
-            int val = INT32_MAX;
-            for (auto &e : mp1[E]) {
-                val = min(val, e);
-                Mx.set(e, INT32_MIN);
-                Mn.set(e, INT32_MAX);
-            }
-            st.insert(E);
-            while (rt < (vv.size() - 1) && st.count(v[vv[rt]])) rt++;
-            curr = val + 1;
-        } else {
-            // cout << curr << "-" << vv[rt] << "mn\n";
-            int E = Mn.sum(curr, vv[rt] + 1);
-            // cout << E << "`";
-            res.push_back(E);
-            int val = INT32_MAX;
-            for (auto &e : mp1[E]) {
-                val = min(val, e);
-                Mx.set(e, INT32_MIN);
-                Mn.set(e, INT32_MAX);
-            }
-            st.insert(E);
-            while (rt < (vv.size() - 1) && st.count(v[vv[rt]])) rt++;
-            curr = val + 1;
-        }
-        // assert(false);
-    }
-    cout << res.size() << "\n";
-    for (auto &e : res) cout << e << " ";
-    cout << "\n";
+    score=max(c0,c1);
+    score+=c2/2;
+    cout<<score<<endl;
 }
 
 int main() {
-
     ios::sync_with_stdio(false);
     cin.tie(0);
-
-    int tests = 1;
-    cin >> tests;
-    for (int i = 1; i <= tests; i++) runCase(i);
-
+    int t;
+    cin>>t;
+    while (t--) {
+        solve();
+    }
     return 0;
 }

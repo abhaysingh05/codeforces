@@ -1,93 +1,72 @@
-#include <iostream>
-#include <vector>
-#include <set>
-#include <algorithm>
+/**
+ *    author:  tourist
+ *    created: 30.08.2024 07:31:34
+**/
+#include <bits/stdc++.h>
 
 using namespace std;
 
-// Helper function to generate all subsequences with unique elements
-void generateUniqueSubsequences(const vector<int>& a, int index, vector<int>& current, set<int>& used, vector<vector<int>>& allSubsequences) {
-    if (index == a.size()) {
-        if (!current.empty()) {
-            allSubsequences.push_back(current);
-        }
-        return;
-    }
-
-    // Option 1: Include the current element if it has not been used
-    if (used.find(a[index]) == used.end()) {
-        current.push_back(a[index]);
-        used.insert(a[index]);
-        generateUniqueSubsequences(a, index + 1, current, used, allSubsequences);
-        current.pop_back();
-        used.erase(a[index]);
-    }
-
-    // Option 2: Exclude the current element
-    generateUniqueSubsequences(a, index + 1, current, used, allSubsequences);
-}
-
-// Comparator function to compare two subsequences after applying the -1 multiplication on odd positions
-bool compareSubsequences(const vector<int>& a, const vector<int>& b) {
-    int len = min(a.size(), b.size());
-    for (int i = 0; i < len; ++i) {
-        int valA = (i % 2 == 0) ? -a[i] : a[i];
-        int valB = (i % 2 == 0) ? -b[i] : b[i];
-        if (valA != valB) return valA < valB;
-    }
-    return a.size() < b.size();  // If they are equal up to len, the shorter one is considered smaller
-}
+#ifdef LOCAL
+#include "algo/debug.h"
+#else
+#define debug(...) 42
+#endif
 
 int main() {
-    int t;
-    cin >> t;
-
-    while (t--) {
-        int n;
-        cin >> n;
-        vector<int> a(n);
-        for (int i = 0; i < n; ++i) {
-            cin >> a[i];
-        }
-
-        vector<vector<int>> allSubsequences;
-        vector<int> current;
-        set<int> used;
-
-        // Generate all subsequences with unique elements
-        generateUniqueSubsequences(a, 0, current, used, allSubsequences);
-
-        // Find the maximum length of subsequences
-        int maxLength = 0;
-        for (const auto& subseq : allSubsequences) {
-            if (subseq.size() > maxLength) {
-                maxLength = subseq.size();
-            }
-        }
-
-        // Collect all subsequences of maximum length
-        vector<vector<int>> maxLenSubsequences;
-        for (const auto& subseq : allSubsequences) {
-            if (subseq.size() == maxLength) {
-                maxLenSubsequences.push_back(subseq);
-            }
-        }
-
-        // Find the lexicographically smallest sequence after applying the transformation
-        vector<int> result = maxLenSubsequences[0];
-        for (const auto& subseq : maxLenSubsequences) {
-            if (compareSubsequences(subseq, result)) {
-                result = subseq;
-            }
-        }
-
-        // Output the result
-        cout << result.size() << endl;
-        for (int i = 0; i < result.size(); ++i) {
-            cout << result[i] << " ";
-        }
-        cout << endl;
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  int tt;
+  cin >> tt;
+  while (tt--) {
+    int n;
+    cin >> n;
+    vector<vector<int>> g(n);
+    for (int i = 0; i < n - 1; i++) {
+      int x, y;
+      cin >> x >> y;
+      --x; --y;
+      g[x].push_back(y);
+      g[y].push_back(x);
     }
-
-    return 0;
+    string s;
+    cin >> s;
+    vector<int> cnt(3);
+    int skip = 0;
+    for (int i = 1; i < n; i++) {
+      if (g[i].size() == 1) {
+        int d = (s[i] == '?' ? 2 : int(s[i] - '0'));
+        cnt[d] += 1;
+      } else {
+        if (s[i] == '?') {
+          skip += 1;
+        }
+      }
+    }
+    int root = (s[0] == '?' ? 2 : int(s[0] - '0'));
+    int it = 0;
+    while (root == 2 || cnt[2] > 0) {
+      if (it == 0) {
+        if (root == 2) {
+          if (cnt[0] == cnt[1] && skip % 2 == 1) {
+            skip = 0;
+          } else {
+            root = (cnt[0] > cnt[1] ? 1 : 0);
+          }
+        } else {
+          cnt[2] -= 1;
+          cnt[root ^ 1] += 1;
+        }
+      } else {
+        if (root == 2) {
+          root = (cnt[0] > cnt[1] ? 0 : 1);
+        } else {
+          cnt[2] -= 1;
+          cnt[root] += 1;
+        }
+      }
+      it ^= 1;
+    }
+    cout << cnt[root ^ 1] << '\n';
+  }
+  return 0;
 }

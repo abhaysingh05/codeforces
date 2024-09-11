@@ -14,6 +14,8 @@ constexpr int mod = 1000000007;
 void runCase(int &testCase) {
     // cout << "#Case " << testCase << ": \n";
 
+    int d,x,y;
+    cin >> d >> x >> y;
     
 }
 
